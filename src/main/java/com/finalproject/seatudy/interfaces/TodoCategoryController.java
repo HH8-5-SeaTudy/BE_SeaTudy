@@ -1,17 +1,14 @@
 package com.finalproject.seatudy.interfaces;
 
-import com.finalproject.seatudy.domain.entity.TodoCategory;
-import com.finalproject.seatudy.service.dto.response.ResponseDto;
 import com.finalproject.seatudy.security.UserDetailsImpl;
-import com.finalproject.seatudy.service.dto.request.TodoCategoryRequestDto;
 import com.finalproject.seatudy.service.TodoCategoryService;
+import com.finalproject.seatudy.service.dto.request.TodoCategoryRequestDto;
+import com.finalproject.seatudy.service.dto.response.ResponseDto;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RestController

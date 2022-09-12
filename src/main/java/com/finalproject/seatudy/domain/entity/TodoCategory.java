@@ -18,6 +18,7 @@ public class TodoCategory {
     private Long categoryId;
 
     private String categoryName;
+
     private String selectDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

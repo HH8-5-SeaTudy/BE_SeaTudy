@@ -36,9 +36,7 @@ public class TimeCheckService {
     @Transactional
     public TimeCheckListDto.CheckIn checkIn(UserDetailsImpl userDetails) throws ParseException {
 
-        Member member = memberRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new RuntimeException("NON_EXISTENT_USER")
-        );
+        Member member = userDetails.getMember();
 
         String date = LocalDate.now(ZoneId.of("Asia/Seoul")).toString(); // 현재 서울 날짜
 
@@ -102,9 +100,7 @@ public class TimeCheckService {
 
     public TimeCheckListDto.TimeCheckDto getCheckIn(UserDetailsImpl userDetails) throws ParseException {
 
-        Member member = memberRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new RuntimeException("NON_EXISTENT_USER")
-        );
+        Member member = userDetails.getMember();
 
         String date = LocalDate.now(ZoneId.of("Asia/Seoul")).toString(); // 현재 서울 날짜
 
