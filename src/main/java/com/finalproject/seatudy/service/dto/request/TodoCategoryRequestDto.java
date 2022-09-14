@@ -14,12 +14,12 @@ public class TodoCategoryRequestDto {
     private String categoryName;
     private String selectDate;
 
-    public TodoCategory toEntity(Member member) {
-
-        return TodoCategory.builder()
-                .categoryName(categoryName)
-                .selectDate(selectDate)
-                .member(member)
-                .build();
-    }
+//    public TodoCategory toEntity(Member member) {
+//
+//        return TodoCategory.builder()
+//                .categoryName(categoryName)
+//                .selectDate(selectDate)
+//                .member(member)
+//                .build();
+//    }
 }

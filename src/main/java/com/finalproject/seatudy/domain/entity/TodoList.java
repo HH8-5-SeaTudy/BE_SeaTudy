@@ -1,7 +1,11 @@
 package com.finalproject.seatudy.domain.entity;
 
 import com.finalproject.seatudy.service.dto.request.TodoListUpdateDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity

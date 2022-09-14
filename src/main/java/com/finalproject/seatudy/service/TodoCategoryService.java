@@ -44,6 +44,7 @@ public class TodoCategoryService {
                     .memberCateDto(MemberCateDto.builder().memberId(member.getMemberId()).email(member.getEmail()).build())
                     .build();
 
+        System.out.println(todoCategoryResponseDto.getCategoryId());
             return ResponseDto.success(todoCategoryResponseDto);
     }
 

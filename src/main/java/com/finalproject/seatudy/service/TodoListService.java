@@ -40,6 +40,9 @@ public class TodoListService {
         }
 
         // todo 리스트 selectDate랑 todoCategory selectDate랑 같아야함(조건문 생성) -> 아니면 오류
+        if (!todoCategory.getSelectDate().equals(todoListRequestDto.getSelectDate())) {
+            throw new RuntimeException("해당 날짜가 다릅니다.");
+        }
 
         TodoList todoList = TodoList.builder()
             .selectDate(todoListRequestDto.getSelectDate())
@@ -114,12 +117,10 @@ public class TodoListService {
     }
     //선택한 연 월 todolist 조회
     public ResponseDto<?> getTodoList(UserDetailsImpl userDetails,String selectDate) {
+        Member member = userDetails.getMember();
+
         List<TodoList> todoLists = todolistRepository.findAllBySelectDateContaining(selectDate);
         List<TodoCateResDto> todoCateResDtos = new ArrayList<>();
-
-        Member member = memberRepository.findByEmail(userDetails.getMember().getEmail()).orElseThrow(
-                () -> new RuntimeException("NOT_EXISTENT_USER")
-        );
 
         for (TodoList todoList : todoLists){
             todoCateResDtos.add(TodoCateResDto.builder()

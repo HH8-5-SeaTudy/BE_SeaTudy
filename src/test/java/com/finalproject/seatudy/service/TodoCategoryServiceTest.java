@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TodoCategoryServiceTest {
-
     @InjectMocks
     private TodoCategoryService todoCategoryService;
     @Mock
@@ -57,27 +56,26 @@ class TodoCategoryServiceTest {
                 .selectDate("2022-09-10")
                 .build();
 
-//        TodoCategory todoCategory = TodoCategory.builder()
-//                .categoryId(1L)
-//                .categoryName(requestDto.getCategoryName())
-//                .selectDate(requestDto.getSelectDate())
-//                .member(member)
-//                .build();
+        TodoCategory todoCategory = TodoCategory.builder()
+                .categoryId(1L)
+                .categoryName(requestDto.getCategoryName())
+                .selectDate(requestDto.getSelectDate())
+                .member(member)
+                .build();
 
         //stub
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
-        when(todoCategoryRepository.save(any())).thenReturn(requestDto.toEntity(member));
-//        when(todoCategoryRepository.save(any())).thenReturn(todoCategory);
+        when(todoCategoryRepository.save(any())).thenReturn(todoCategory);
 
         //when
         ResponseDto<?> responseDto = todoCategoryService.createTodoCategory(userDetails, requestDto);
-        TodoCategoryResponseDto responseDtoData = (TodoCategoryResponseDto) responseDto.getData();
+        TodoCategoryResponseDto todoCategoryResponseDto = (TodoCategoryResponseDto) responseDto.getData();
 
         //then
-        assertEquals(responseDtoData.getMemberCateDto().getMemberId(), userDetails.getMember().getMemberId());
-        assertEquals(responseDtoData.getMemberCateDto().getEmail(), userDetails.getMember().getEmail());
-        assertEquals(responseDtoData.getCategoryName(), requestDto.getCategoryName());
-        assertEquals(responseDtoData.getSelectDate(), requestDto.getSelectDate());
+        assertEquals(todoCategoryResponseDto.getMemberCateDto().getMemberId(), userDetails.getMember().getMemberId());
+        assertEquals(todoCategoryResponseDto.getMemberCateDto().getEmail(), userDetails.getMember().getEmail());
+        assertEquals(todoCategoryResponseDto.getCategoryName(), requestDto.getCategoryName());
+        assertEquals(todoCategoryResponseDto.getSelectDate(), requestDto.getSelectDate());
     }
 
     @Test
@@ -120,17 +118,19 @@ class TodoCategoryServiceTest {
 
         //when
         ResponseDto<?> responseDtos = todoCategoryService.getAllTodoCategory(userDetails);
-        List<TodoCategoryResponseDto> responseDtosData = (List<TodoCategoryResponseDto>) responseDtos.getData();
+        List<TodoCategoryResponseDto> todoCategoryResponseDtos = (List<TodoCategoryResponseDto>) responseDtos.getData();
 
         //then
-        assertEquals(responseDtosData.get(0).getMemberCateDto().getMemberId(), member.getMemberId());
-        assertEquals(responseDtosData.get(0).getMemberCateDto().getEmail(), member.getEmail());
-        assertEquals(responseDtosData.get(0).getCategoryName(), todoCategories.get(0).getCategoryName());
-        assertEquals(responseDtosData.get(0).getSelectDate(), todoCategories.get(0).getSelectDate());
-        assertEquals(responseDtosData.get(1).getMemberCateDto().getMemberId(), member.getMemberId());
-        assertEquals(responseDtosData.get(1).getMemberCateDto().getEmail(), member.getEmail());
-        assertEquals(responseDtosData.get(1).getCategoryName(), todoCategories.get(1).getCategoryName());
-        assertEquals(responseDtosData.get(1).getSelectDate(), todoCategories.get(1).getSelectDate());
+        assertEquals(todoCategoryResponseDtos.get(0).getMemberCateDto().getMemberId(), todoCategories.get(0).getMember().getMemberId());
+        assertEquals(todoCategoryResponseDtos.get(0).getMemberCateDto().getEmail(), todoCategories.get(0).getMember().getEmail());
+        assertEquals(todoCategoryResponseDtos.get(0).getCategoryId(), todoCategories.get(0).getCategoryId());
+        assertEquals(todoCategoryResponseDtos.get(0).getCategoryName(), todoCategories.get(0).getCategoryName());
+        assertEquals(todoCategoryResponseDtos.get(0).getSelectDate(), todoCategories.get(0).getSelectDate());
+        assertEquals(todoCategoryResponseDtos.get(1).getMemberCateDto().getMemberId(), todoCategories.get(1).getMember().getMemberId());
+        assertEquals(todoCategoryResponseDtos.get(1).getMemberCateDto().getEmail(), todoCategories.get(1).getMember().getEmail());
+        assertEquals(todoCategoryResponseDtos.get(1).getCategoryId(), todoCategories.get(1).getCategoryId());
+        assertEquals(todoCategoryResponseDtos.get(1).getCategoryName(), todoCategories.get(1).getCategoryName());
+        assertEquals(todoCategoryResponseDtos.get(1).getSelectDate(), todoCategories.get(1).getSelectDate());
     }
 
     @Test
@@ -158,18 +158,19 @@ class TodoCategoryServiceTest {
                 .member(member)
                 .todoList(new ArrayList<>())
                 .build();
-        Optional<TodoCategory> todoCategoryOp = Optional.of(todoCategory);
-        when(todoCategoryRepository.findById(todoCategory.getCategoryId())).thenReturn(todoCategoryOp);
+
+        when(todoCategoryRepository.findById(todoCategory.getCategoryId())).thenReturn(Optional.of(todoCategory));
 
         //when
         ResponseDto<?> responseDto = todoCategoryService.updateTodoCategory(userDetails, todoCategory.getCategoryId(), requestDto);
-        TodoCategoryResponseDto responseDtoData = (TodoCategoryResponseDto) responseDto.getData();
+        TodoCategoryResponseDto todoCategoryResponseDto = (TodoCategoryResponseDto) responseDto.getData();
 
         //then
-        assertEquals(responseDtoData.getMemberCateDto().getMemberId(), userDetails.getMember().getMemberId());
-        assertEquals(responseDtoData.getMemberCateDto().getEmail(), userDetails.getMember().getEmail());
-        assertEquals(responseDtoData.getCategoryName(), requestDto.getCategoryName());
-        assertEquals(responseDtoData.getSelectDate(), requestDto.getSelectDate());
+        assertEquals(todoCategoryResponseDto.getMemberCateDto().getMemberId(), userDetails.getMember().getMemberId());
+        assertEquals(todoCategoryResponseDto.getMemberCateDto().getEmail(), userDetails.getMember().getEmail());
+        assertEquals(todoCategoryResponseDto.getCategoryId(), todoCategory.getCategoryId());
+        assertEquals(todoCategoryResponseDto.getCategoryName(), requestDto.getCategoryName());
+        assertEquals(todoCategoryResponseDto.getSelectDate(), requestDto.getSelectDate());
     }
 
     @Test
