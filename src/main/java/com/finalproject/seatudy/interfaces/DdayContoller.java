@@ -29,8 +29,8 @@ public class DdayContoller {
 
     @GetMapping("/ddays")
     @ApiOperation(value = "D-day 조회")
-    public List<DdayResponseDto> getDday(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ddayService.getDday(userDetails);
+    public List<DdayResponseDto> getAllDday(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ddayService.getAllDday(userDetails);
     }
 
     @PutMapping("/ddays/{ddayId}")

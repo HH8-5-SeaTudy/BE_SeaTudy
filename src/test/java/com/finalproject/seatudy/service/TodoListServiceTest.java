@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -37,7 +37,7 @@ class TodoListServiceTest {
     private TodoCategoryRepository todoCategoryRepository;
 
     @Test
-    @DisplayName("todo 리스트 등록")
+    @DisplayName("todo 리스트 등록 테스트")
     void createTodoList_test() {
         //given
         Member member = Member.builder()
@@ -59,31 +59,23 @@ class TodoListServiceTest {
                 .content("단위테스트 작성중입니다.")
                 .build();
 
-        TodoList todoList = TodoList.builder()
-                .todoId(1L)
-                .selectDate(requestDto.getSelectDate())
-                .content(requestDto.getContent())
-                .todoCategory(todoCategory)
-                .member(member)
-                .build();
-
         //stub
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
         when(todoCategoryRepository.findById(todoCategory.getCategoryId())).thenReturn(Optional.of(todoCategory));
-        when(todoListRepository.save(any())).thenReturn(todoList);
+//        when(todoListRepository.save(any())).thenReturn(todoList);
 
         //when
         ResponseDto<?> responseDto = todoListService.createTodoList(userDetails, todoCategory.getCategoryId(), requestDto);
         TodoListResponseDto.TodoListResDto todoListResDto = (TodoListResponseDto.TodoListResDto) responseDto.getData();
 
         //then
-        assertEquals(todoList.getMember().getEmail(), userDetails.getMember().getEmail());
         assertEquals(todoListResDto.getSelectDate(), requestDto.getSelectDate());
         assertEquals(todoListResDto.getContent(), requestDto.getContent());
+        assertEquals(todoListResDto.getDone(), 0);
     }
 
     @Test
-    @DisplayName("todo 리스트 수정")
+    @DisplayName("todo 리스트 수정 테스트")
     void updateTodoList() {
         //given
         Member member = Member.builder()
@@ -130,7 +122,7 @@ class TodoListServiceTest {
     }
 
     @Test
-    @DisplayName("todo 리스트 삭제")
+    @DisplayName("todo 리스트 삭제 테스트")
     void deleteTodoList() {
         //given
         Member member = Member.builder()
@@ -168,7 +160,7 @@ class TodoListServiceTest {
     }
 
     @Test
-    @DisplayName("todo 리스트 완료")
+    @DisplayName("todo 리스트 완료 테스트")
     void completeTodoList() {
         //given
         Member member = Member.builder()
@@ -218,7 +210,7 @@ class TodoListServiceTest {
     }
 
     @Test
-    @DisplayName("todo 리스트 조회")
+    @DisplayName("todo 리스트 조회 테스트")
     void getTodoList() {
         //given
         Member member = Member.builder()
@@ -247,8 +239,15 @@ class TodoListServiceTest {
                 .build());
         todoLists.add(TodoList.builder()
                 .todoId(2L)
-                .selectDate("2022-09-10")
+                .selectDate("2022-09-15")
                 .content("오류 해결중입니다.")
+                .todoCategory(todoCategory)
+                .member(member)
+                .build());
+        todoLists.add(TodoList.builder()
+                .todoId(3L)
+                .selectDate("2022-09-10")
+                .content("강의 시청중입니다.")
                 .todoCategory(todoCategory)
                 .member(member)
                 .build());
@@ -256,25 +255,22 @@ class TodoListServiceTest {
 
         //stub
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
-        when(todoListRepository.findAllBySelectDateContaining(selectDate)).thenReturn(todoLists);
+        when(todoListRepository.findAllBySelectDateContaining(selectDate)).thenReturn(todoLists.stream()
+                .filter(todoList -> todoList.getSelectDate().equals(selectDate))
+                .collect(Collectors.toList())
+        );
 
         //when
         ResponseDto<?> responseDto = todoListService.getTodoList(userDetails, selectDate);
         List<TodoListResponseDto.TodoCateResDto> todoCateResDtos = (List<TodoListResponseDto.TodoCateResDto>) responseDto.getData();
 
         //then
-        assertEquals(todoLists.get(0).getMember().getEmail(), userDetails.getMember().getEmail());
         assertEquals(todoCateResDtos.get(0).getTodoCateShortResDto().getSelectDate(), todoLists.get(0).getTodoCategory().getSelectDate());
-        assertEquals(todoCateResDtos.get(0).getTodoCateShortResDto().getTodoCategoryName(), todoLists.get(0).getTodoCategory().getCategoryName());
-        assertEquals(todoCateResDtos.get(0).getTodoId(), todoLists.get(0).getTodoId());
         assertEquals(todoCateResDtos.get(0).getSelectDate(), todoLists.get(0).getSelectDate());
-        assertEquals(todoCateResDtos.get(0).getContent(), todoLists.get(0).getContent());
-        assertEquals(todoLists.get(1).getMember().getEmail(), userDetails.getMember().getEmail());
-        assertEquals(todoCateResDtos.get(1).getTodoCateShortResDto().getSelectDate(), todoLists.get(1).getTodoCategory().getSelectDate());
-        assertEquals(todoCateResDtos.get(1).getTodoCateShortResDto().getTodoCategoryName(), todoLists.get(1).getTodoCategory().getCategoryName());
-        assertEquals(todoCateResDtos.get(1).getTodoId(), todoLists.get(1).getTodoId());
-        assertEquals(todoCateResDtos.get(1).getSelectDate(), todoLists.get(1).getSelectDate());
-        assertEquals(todoCateResDtos.get(1).getContent(), todoLists.get(1).getContent());
+        assertEquals(todoCateResDtos.get(1).getTodoCateShortResDto().getSelectDate(), todoLists.get(2).getTodoCategory().getSelectDate());
+        assertEquals(todoCateResDtos.get(1).getSelectDate(), todoLists.get(2).getSelectDate());
+        assertEquals(todoCateResDtos.size(), todoLists.stream().filter(todoList -> todoList.getSelectDate().equals(selectDate))
+                .collect(Collectors.toList()).size());
     }
 
 }

@@ -27,11 +27,8 @@ import static com.finalproject.seatudy.service.util.Formatter.*;
 @RequiredArgsConstructor
 @Service
 public class TimeCheckService {
-
     private final TimeCheckRepository timeCheckRepository;
-    private final MemberRepository memberRepository;
     private final RankRepository rankRepository;
-
 
     @Transactional
     public TimeCheckListDto.CheckIn checkIn(UserDetailsImpl userDetails) throws ParseException {
@@ -70,6 +67,7 @@ public class TimeCheckService {
         }
 
         String nowTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        // String nowTime = stf.format(today.getTime()); or LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         TimeCheck timeCheck = TimeCheck.builder()
                 .member(member)
                 .date(setToday)
@@ -197,9 +195,7 @@ public class TimeCheckService {
     @Transactional
     public TimeCheckListDto.CheckOut checkOut(UserDetailsImpl userDetails) throws ParseException {
 
-        Member member = memberRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new RuntimeException("NON_EXISTENT_USER")
-        );
+        Member member = userDetails.getMember();
 
         String date = LocalDate.now(ZoneId.of("Asia/Seoul")).toString(); // 현재 서울 날짜
 
@@ -217,11 +213,12 @@ public class TimeCheckService {
         String setToday = dateFormat(today); //날짜 형식에 맞게 String형태로 포맷
 
         List<TimeCheck> findCheckIns = timeCheckRepository.findByMemberAndDate(member, setToday);
-        TimeCheck lastCheckIn = findCheckIns.get(findCheckIns.size() - 1); //마지막번째 기록을 get
+        TimeCheck lastCheckIn = findCheckIns.get(findCheckIns.size() - 1); //마지막번째 기록을 get(최신)
 
         Optional<Rank> findRank = rankRepository.findByMemberAndDate(member, setToday);
 
         String nowTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        // String nowTime = stf.format(today.getTime()); or LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
         String dayStudy = getCheckIn(userDetails).getDayStudyTime(); //총 공부시간
 
@@ -260,7 +257,7 @@ public class TimeCheckService {
                 .member(member)
                 .timeChecks(findCheckIns)
                 .build();
-        lastCheckIn.setRank(rank);
+        lastCheckIn.setRank(rank); //이 로직은 무엇을 의미하나?..
         rankRepository.save(rank);
 
         String[] timeStamp = dayStudy.split(":"); //시, 분, 초 나누기
@@ -280,7 +277,7 @@ public class TimeCheckService {
         return checkOut;
     }
 
-    private String RankCheck(Optional<Rank> rank, Calendar today) throws ParseException{
+    private static String RankCheck(Optional<Rank> rank, Calendar today) throws ParseException{
         if (rank.isPresent()){
             String dayStudy = stf.format(today.getTime());
             rank.get().getDayStudy();

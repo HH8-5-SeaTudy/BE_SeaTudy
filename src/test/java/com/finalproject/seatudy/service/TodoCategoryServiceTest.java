@@ -42,7 +42,7 @@ class TodoCategoryServiceTest {
 //    }
 
     @Test
-    @DisplayName("todo 카테고리 등록")
+    @DisplayName("todo 카테고리 등록 테스트")
     void createTodoCategory_test() {
         //given
         Member member = Member.builder()
@@ -56,16 +56,9 @@ class TodoCategoryServiceTest {
                 .selectDate("2022-09-10")
                 .build();
 
-        TodoCategory todoCategory = TodoCategory.builder()
-                .categoryId(1L)
-                .categoryName(requestDto.getCategoryName())
-                .selectDate(requestDto.getSelectDate())
-                .member(member)
-                .build();
-
         //stub
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
-        when(todoCategoryRepository.save(any())).thenReturn(todoCategory);
+//        when(todoCategoryRepository.save(any())).thenReturn(todoCategory);
 
         //when
         ResponseDto<?> responseDto = todoCategoryService.createTodoCategory(userDetails, requestDto);
@@ -79,7 +72,7 @@ class TodoCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("todo 카테고리 조회")
+    @DisplayName("todo 카테고리 조회 테스트")
     void getAllTodoCategory_test() {
         //given
         Member member = Member.builder()
@@ -131,10 +124,11 @@ class TodoCategoryServiceTest {
         assertEquals(todoCategoryResponseDtos.get(1).getCategoryId(), todoCategories.get(1).getCategoryId());
         assertEquals(todoCategoryResponseDtos.get(1).getCategoryName(), todoCategories.get(1).getCategoryName());
         assertEquals(todoCategoryResponseDtos.get(1).getSelectDate(), todoCategories.get(1).getSelectDate());
+        assertEquals(todoCategoryResponseDtos.size(), todoCategories.size());
     }
 
     @Test
-    @DisplayName("todo 카테고리 수정")
+    @DisplayName("todo 카테고리 수정 테스트")
     void updateTodoCategory_test() {
         //given
         Member member = Member.builder()
@@ -174,7 +168,7 @@ class TodoCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("todo 카테고리 삭제")
+    @DisplayName("todo 카테고리 삭제 테스트")
     void deleteTodoCategory() {
         //given
         Member member = Member.builder()

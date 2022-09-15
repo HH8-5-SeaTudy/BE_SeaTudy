@@ -49,7 +49,7 @@ public class DdayService {
         return responseDto;
     }
 
-    public List<DdayResponseDto> getDday(UserDetailsImpl userDetails) {
+    public List<DdayResponseDto> getAllDday(UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
 

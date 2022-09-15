@@ -3,6 +3,8 @@ package com.finalproject.seatudy.service.util;
 import com.finalproject.seatudy.domain.entity.Rank;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,8 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.finalproject.seatudy.service.util.Formatter.sdf;
-import static com.finalproject.seatudy.service.util.Formatter.sdtf;
+import static com.finalproject.seatudy.service.util.Formatter.*;
 import static java.lang.String.format;
 
 public class CalendarUtil {
@@ -82,8 +83,59 @@ public class CalendarUtil {
     }
 
 
-//    public static void main(String[] args) throws ParseException {
-//        todayCalendarTime(Calendar.getInstance());
-//        setCalendarTime(Calendar.getInstance());
-//    }
+    public static void main(String[] args) throws ParseException {
+
+        String date = LocalDate.now(ZoneId.of("Asia/Seoul")).toString();
+        Calendar today = todayCalendar(date); // 현재 시간 기준 날짜
+        todayCalendarTime(today); // String yyyy-MM-dd HH:mm:ss 현재시간
+        String setToday = dateFormat(today);
+        String setToday2  = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        if (date == setToday) {
+            System.out.println(true);
+        } else {
+            System.out.println(false);
+        }
+        System.out.println("=======================");
+        if (date == setToday2) {
+            System.out.println(true);
+        } else {
+            System.out.println(false);
+        }
+        System.out.println("=======================");
+        if (setToday == setToday2) {
+            System.out.println(true);
+        } else {
+            System.out.println(false);
+        }
+        System.out.println(date);
+        System.out.println(setToday);
+        System.out.println(setToday2);
+        System.out.println("=======================");
+
+        String nowTime1 = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        String nowTime2 = stf.format(today.getTime());
+        String nowTime3 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
+        if (nowTime1 == nowTime2){
+            System.out.println("1=2");
+        } else {
+            System.out.println("1!=2");
+        }
+        System.out.println("=======================");
+        if (nowTime1 == nowTime3){
+            System.out.println("1=3");
+        } else {
+            System.out.println("1!=3");
+        }
+        System.out.println("=======================");
+        if (nowTime2 == nowTime3) {
+            System.out.println("2=3");
+        } else {
+            System.out.println("2!=3");
+        }
+        System.out.println(nowTime1);
+        System.out.println(nowTime2);
+        System.out.println(nowTime3);
+    }
 }
