@@ -44,5 +44,14 @@ public class TodoListResponseDto {
         private int done;
         private Long categoryId;
         private String selectDate;
+
+        public static TodoListCateResDto fromEntity(TodoList todoList) {
+            return new TodoListCateResDto(
+                    todoList.getTodoId(),
+                    todoList.getContent(),
+                    todoList.getDone(),
+                    todoList.getTodoCategory().getCategoryId(),
+                    todoList.getSelectDate());
+        }
     }
 }

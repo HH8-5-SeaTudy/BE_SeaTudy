@@ -51,12 +51,4 @@ public class TodoListController {
                                            @PathVariable Long todoId){
         return todolistService.completeTodoList(userDetails,todoId);
     }
-
-    @GetMapping("/todoLists")
-    @ApiOperation(value = "할일 리스트 조회")
-    @ApiImplicitParam(name = "selectDate", value = "날짜 선택")
-    public ResponseDto<?> getTodoList(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestParam String selectDate){
-        return todolistService.getTodoList(userDetails,selectDate);
-    }
 }

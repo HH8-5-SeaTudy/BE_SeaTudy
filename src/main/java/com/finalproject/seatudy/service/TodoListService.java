@@ -63,12 +63,7 @@ public class TodoListService {
                     .member(member)
                     .build();
             todolistRepository.save(todoList);
-            TodoListCateResDto todoListCateResDto = TodoListCateResDto.builder()
-                    .todoId(todoList.getTodoId())
-                    .content(todoList.getContent())
-                    .selectDate(todoList.getSelectDate())
-                    .categoryId(todoList.getTodoCategory().getCategoryId())
-                    .build();
+            TodoListCateResDto todoListCateResDto = TodoListCateResDto.fromEntity(todoList);
             return ResponseDto.success(todoListCateResDto);
         }
         throw new CustomException(TODOLIST_FORBIDDEN_POST);
@@ -86,13 +81,7 @@ public class TodoListService {
         if(todoList.getMember().getEmail().equals(member.getEmail())){
             todoList.update(todoListUpdateDto);
 
-            TodoListCateResDto todoListCateResDto = TodoListCateResDto.builder()
-                    .todoId(todoList.getTodoId())
-                    .content(todoList.getContent())
-                    .selectDate(todoList.getSelectDate())
-                    .done(todoList.getDone())
-                    .categoryId(todoList.getTodoCategory().getCategoryId())
-                    .build();
+            TodoListCateResDto todoListCateResDto = TodoListCateResDto.fromEntity(todoList);
             return ResponseDto.success(todoListCateResDto);
         }
         throw new CustomException(TODOLIST_FORBIDDEN_UPDATE);
@@ -126,54 +115,11 @@ public class TodoListService {
         );
 
         if (member.getEmail().equals(todoListDone.getMember().getEmail())) {
-            if (todoListDone.getDone() == 1) {
-                todoListDone.cancelDone();
-                TodoListCateResDto todoListCateResDto = TodoListCateResDto.builder()
-                        .todoId(todoListDone.getTodoId())
-                        .content(todoListDone.getContent())
-                        .selectDate(todoListDone.getSelectDate())
-                        .done(todoListDone.getDone())
-                        .categoryId(todoListDone.getTodoCategory().getCategoryId())
-                        .build();
-                return ResponseDto.success(todoListCateResDto);
-            }
-            todoListDone.done();
-            TodoListCateResDto todoListCateResDto = TodoListCateResDto.builder()
-                    .todoId(todoListDone.getTodoId())
-                    .content(todoListDone.getContent())
-                    .selectDate(todoListDone.getSelectDate())
-                    .done(todoListDone.getDone())
-                    .categoryId(todoListDone.getTodoCategory().getCategoryId())
-                    .build();
+            todoListDone.changeDone((todoListDone.getDone() == 1) ? 0 : 1);
+            TodoListCateResDto todoListCateResDto = TodoListCateResDto.fromEntity(todoListDone);
             return ResponseDto.success(todoListCateResDto);
         }
         throw new CustomException(TODOLIST_FORBIDDEN_COMPLETE);
-    }
-    //선택한 연 월 todolist 조회
-    public ResponseDto<?> getTodoList(UserDetailsImpl userDetails,String selectDate) {
-        List<TodoList> todoLists = todolistRepository.findAllBySelectDateContaining(selectDate);
-        List<TodoCateResDto> todoCateResDtos = new ArrayList<>();
-
-        Member member = memberRepository.findByEmail(userDetails.getMember().getEmail()).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
-
-            for (TodoList todoList : todoLists){
-                todoCateResDtos.add(TodoCateResDto.builder()
-                        .todoCateShortResDto(TodoCateShortResDto.builder()
-                                .todoCategoryId(todoList.getTodoCategory().getCategoryId())
-                                .todoCategoryName(todoList.getTodoCategory().getCategoryName())
-                                .selectDate(todoList.getTodoCategory().getSelectDate())
-                                .build())
-                        .todoId(todoList.getTodoId())
-                        .content(todoList.getContent())
-                        .selectDate(todoList.getSelectDate())
-                        .done(todoList.getDone())
-                        .build()
-                );
-
-            }
-            return ResponseDto.success(todoCateResDtos);
     }
 
     private TodoCategory getTodoCategory(Long todoCategoryId){
